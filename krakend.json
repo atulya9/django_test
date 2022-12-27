@@ -1,0 +1,50 @@
+{
+  "$schema": "https://www.krakend.io/schema/v3.json",
+  "version": 3,
+  "name": "KrakenD - API Gateway",
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "endpoints": [
+    {
+      "endpoint": "/v1/{username}",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/v1/users?{username}",
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "disable_host_sanitize": false,
+          "host": [
+            "localhost:8000"
+          ],
+          "allow": [
+            "id"
+          ]
+        },
+        {
+          "url_pattern": "/api/v1/orders?user_ID={resp0_id}",
+          "encoding": "json",
+          "sd": "static",
+          "method": "GET",
+          "disable_host_sanitize": false,
+          "host": [
+            "localhost:8001"
+          ],
+          "target": ""
+        }
+      ],
+      "extra_config": {
+        "proxy": {
+          "sequential": true
+        }
+      },
+      "input_query_strings": [
+        "username"
+      ]
+    }
+  ],
+  "port": 8002
+}
